@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>北京时间时钟</title>
+    <title>精美北京时间时钟</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -14,12 +15,21 @@
         body {
             width: 100%;
             height: 100vh;
-            background: #ffffff;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Nunito', sans-serif;
             overflow: hidden;
+            position: relative;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         #particleCanvas {
@@ -28,6 +38,7 @@
             left: 0;
             width: 100%;
             height: 100%;
+            z-index: 1;
         }
 
         .container {
@@ -37,6 +48,18 @@
             flex-direction: column;
             align-items: center;
             gap: 30px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            max-width: 90%;
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
         }
 
         .clock-wrapper {
@@ -49,14 +72,17 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.9),
-                        inset 0 -4px 8px rgba(0, 0, 0, 0.05);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 20px 50px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -4px 8px rgba(0, 0, 0, 0.3);
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
         }
 
         .clock::before {
@@ -67,7 +93,17 @@
             background: radial-gradient(circle at 30% 30%, #ff6b9d, #c06c84);
             border-radius: 50%;
             z-index: 100;
-            box-shadow: 0 4px 12px rgba(255, 107, 157, 0.4);
+            box-shadow: 0 4px 12px rgba(255, 107, 157, 0.6);
+        }
+
+        /* 内部装饰圆圈 */
+        .clock::after {
+            content: '';
+            position: absolute;
+            width: 90%;
+            height: 90%;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .clock-face {
@@ -84,7 +120,8 @@
             text-align: center;
             font-size: 20px;
             font-weight: bold;
-            color: #333;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
 
         .number span {
@@ -98,54 +135,169 @@
             left: 50%;
             transform-origin: bottom center;
             border-radius: 10px;
+            transition: all 0.1s ease;
         }
 
         .hour-hand {
             width: 8px;
             height: 100px;
             margin-left: -4px;
-            background: linear-gradient(to top, #2d3436, #636e72);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(to top, #f8f9fa, #adb5bd);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 10;
         }
 
         .minute-hand {
             width: 6px;
             height: 130px;
             margin-left: -3px;
-            background: linear-gradient(to top, #0984e3, #74b9ff);
-            box-shadow: 0 4px 12px rgba(9, 132, 227, 0.3);
+            background: linear-gradient(to top, #495057, #e9ecef);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 20;
         }
 
         .second-hand {
             width: 3px;
             height: 140px;
             margin-left: -1.5px;
-            background: #ff7675;
-            box-shadow: 0 2px 8px rgba(255, 118, 117, 0.4);
+            background: linear-gradient(to top, #fd7e14, #ffc107);
+            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.6);
+            z-index: 30;
         }
 
         .digital-time {
             font-size: 48px;
             font-weight: bold;
-            color: #2d3436;
+            color: #fff;
             letter-spacing: 2px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            font-family: 'Monaco', 'Courier New', monospace;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            font-family: 'Orbitron', monospace;
             min-width: 280px;
             text-align: center;
+            margin: 10px 0;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .date {
-            font-size: 18px;
-            color: #636e72;
+            font-size: 20px;
+            color: #fff;
             letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            margin-bottom: 5px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 8px 15px;
+            border-radius: 8px;
         }
 
         .location {
-            font-size: 16px;
-            color: #95a5a6;
+            font-size: 18px;
+            color: #fff;
             margin-top: 10px;
             font-weight: 500;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            background: rgba(0, 0, 0, 0.2);
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+
+        .title {
+            font-size: 32px;
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .time-zone {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .time-zone-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 15px;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            text-align: center;
+            min-width: 120px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .time-zone-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #ffd166;
+        }
+
+        .time-zone-value {
+            font-family: 'Orbitron', monospace;
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .clock-wrapper {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .digital-time {
+                font-size: 36px;
+                min-width: 220px;
+            }
+            
+            .title {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .clock-wrapper {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .digital-time {
+                font-size: 28px;
+                min-width: 180px;
+            }
+            
+            .number {
+                font-size: 16px;
+            }
+            
+            .hour-hand {
+                height: 80px;
+            }
+            
+            .minute-hand {
+                height: 100px;
+            }
+            
+            .second-hand {
+                height: 110px;
+            }
+            
+            .title {
+                font-size: 20px;
+            }
+            
+            .date {
+                font-size: 16px;
+            }
+            
+            .location {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -153,6 +305,8 @@
     <canvas id="particleCanvas"></canvas>
     
     <div class="container">
+        <h1 class="title">世界时区时钟</h1>
+        
         <div class="clock-wrapper">
             <div class="clock">
                 <div class="clock-face">
@@ -178,12 +332,27 @@
         <div>
             <div class="digital-time" id="digitalTime">00:00:00</div>
             <div class="date" id="dateDisplay">2025年12月19日</div>
-            <div class="location">北京时间</div>
+            <div class="location">北京时间 (UTC+8)</div>
+        </div>
+        
+        <div class="time-zone">
+            <div class="time-zone-item">
+                <div class="time-zone-label">纽约</div>
+                <div class="time-zone-value" id="nyTime">--:--:--</div>
+            </div>
+            <div class="time-zone-item">
+                <div class="time-zone-label">伦敦</div>
+                <div class="time-zone-value" id="londonTime">--:--:--</div>
+            </div>
+            <div class="time-zone-item">
+                <div class="time-zone-label">东京</div>
+                <div class="time-zone-value" id="tokyoTime">--:--:--</div>
+            </div>
         </div>
     </div>
 
     <script>
-        // 粒子效果
+        // 粒子效果增强版
         class ParticleSystem {
             constructor() {
                 this.canvas = document.getElementById('particleCanvas');
@@ -204,7 +373,7 @@
             }
 
             init() {
-                for (let i = 0; i < 80; i++) {
+                for (let i = 0; i < 100; i++) {
                     this.particles.push(this.createParticle());
                 }
             }
@@ -213,13 +382,14 @@
                 return {
                     x: Math.random() * this.canvas.width,
                     y: Math.random() * this.canvas.height,
-                    radius: Math.random() * 2 + 1,
+                    radius: Math.random() * 3 + 1,
                     color: this.colors[Math.floor(Math.random() * this.colors.length)],
-                    velocityX: (Math.random() - 0.5) * 0.5,
-                    velocityY: (Math.random() - 0.5) * 0.5,
-                    opacity: Math.random() * 0.5 + 0.3,
+                    velocityX: (Math.random() - 0.5) * 0.8,
+                    velocityY: (Math.random() - 0.5) * 0.8,
+                    opacity: Math.random() * 0.7 + 0.2,
                     life: 1,
-                    decay: Math.random() * 0.002 + 0.001
+                    decay: Math.random() * 0.001 + 0.0005,
+                    pulse: Math.random() * 0.02
                 };
             }
 
@@ -229,6 +399,9 @@
                     particle.y += particle.velocityY;
                     particle.life -= particle.decay;
                     particle.opacity = particle.life * (Math.random() * 0.5 + 0.3);
+                    
+                    // 脉动效果
+                    particle.radius += Math.sin(Date.now() * 0.001 + index) * particle.pulse;
 
                     // 边界反弹
                     if (particle.x < 0 || particle.x > this.canvas.width) {
@@ -258,10 +431,10 @@
                     
                     // 绘制光晕
                     this.ctx.strokeStyle = particle.color;
-                    this.ctx.lineWidth = 0.5;
-                    this.ctx.globalAlpha = particle.opacity * 0.5;
+                    this.ctx.lineWidth = 0.8;
+                    this.ctx.globalAlpha = particle.opacity * 0.6;
                     this.ctx.beginPath();
-                    this.ctx.arc(particle.x, particle.y, particle.radius * 2, 0, Math.PI * 2);
+                    this.ctx.arc(particle.x, particle.y, particle.radius * 3, 0, Math.PI * 2);
                     this.ctx.stroke();
                     
                     this.ctx.restore();
@@ -313,7 +486,36 @@
             const weekDay = weekDays[beijingTime.getDay()];
             document.getElementById('dateDisplay').textContent = `${year}年${month}月${date}日 星期${weekDay}`;
 
+            // 更新其他时区时间
+            updateWorldTimes(beijingTime);
+
             requestAnimationFrame(updateClock);
+        }
+
+        function updateWorldTimes(beijingTime) {
+            // 计算纽约时间 (UTC-5 或 UTC-4，这里简化为-5)
+            const nyTime = new Date(beijingTime.getTime() - 13 * 60 * 60 * 1000);
+            const nyHours = nyTime.getHours();
+            const nyMinutes = nyTime.getMinutes();
+            const nySeconds = nyTime.getSeconds();
+            document.getElementById('nyTime').textContent = 
+                `${String(nyHours).padStart(2, '0')}:${String(nyMinutes).padStart(2, '0')}:${String(nySeconds).padStart(2, '0')}`;
+
+            // 计算伦敦时间 (UTC+0)
+            const londonTime = new Date(beijingTime.getTime() - 8 * 60 * 60 * 1000);
+            const lHours = londonTime.getHours();
+            const lMinutes = londonTime.getMinutes();
+            const lSeconds = londonTime.getSeconds();
+            document.getElementById('londonTime').textContent = 
+                `${String(lHours).padStart(2, '0')}:${String(lMinutes).padStart(2, '0')}:${String(lSeconds).padStart(2, '0')}`;
+
+            // 计算东京时间 (UTC+9)
+            const tokyoTime = new Date(beijingTime.getTime() + 1 * 60 * 60 * 1000);
+            const tHours = tokyoTime.getHours();
+            const tMinutes = tokyoTime.getMinutes();
+            const tSeconds = tokyoTime.getSeconds();
+            document.getElementById('tokyoTime').textContent = 
+                `${String(tHours).padStart(2, '0')}:${String(tMinutes).padStart(2, '0')}:${String(tSeconds).padStart(2, '0')}`;
         }
 
         updateClock();
